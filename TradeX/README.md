@@ -1,4 +1,4 @@
-# Zerodha Clone
+# TradeX a stoc exchange platform
 
 Full-stack Zerodha-style demo project with:
 
