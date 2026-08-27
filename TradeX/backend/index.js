@@ -211,6 +211,89 @@ const parseOrder = (body) => {
   return { order };
 };
 
+app.get("/", (req, res) => {
+  if (req.accepts("html")) {
+    return res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TradeX API Server</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; margin: 0; }
+          .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5); }
+          h1 { color: #38bdf8; margin-top: 0; }
+          .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; background: #059669; color: white; font-weight: bold; font-size: 0.875rem; }
+          .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+          .card { background: #334155; padding: 1rem; border-radius: 8px; }
+          .card h3 { margin: 0 0 0.5rem 0; color: #94a3b8; font-size: 0.875rem; text-transform: uppercase; }
+          .card a { color: #38bdf8; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
+          .card a:hover { text-decoration: underline; }
+          ul { list-style: none; padding: 0; margin-top: 1rem; }
+          li { padding: 0.6rem 0; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; }
+          li a { color: #38bdf8; font-family: monospace; text-decoration: none; font-weight: bold; }
+          li a:hover { text-decoration: underline; }
+          .desc { color: #94a3b8; font-size: 0.9rem; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>TradeX API Server</h1>
+          <p><span class="badge">API Active</span> Running on <strong>http://localhost:${PORT}</strong></p>
+          <div class="grid">
+            <div class="card">
+              <h3>Landing Page (Frontend)</h3>
+              <a href="http://localhost:3000" target="_blank">http://localhost:3000 ↗</a>
+            </div>
+            <div class="card">
+              <h3>Trading Dashboard</h3>
+              <a href="http://localhost:3001" target="_blank">http://localhost:3001 ↗</a>
+            </div>
+          </div>
+          <h2>Available API Endpoints</h2>
+          <ul>
+            <li><a href="/allHoldings">/allHoldings</a> <span class="desc">Portfolio holdings</span></li>
+            <li><a href="/allPositions">/allPositions</a> <span class="desc">Trading positions</span></li>
+            <li><a href="/allOrders">/allOrders</a> <span class="desc">Executed orders</span></li>
+            <li><a href="/quotes">/quotes</a> <span class="desc">Live stock quotes</span></li>
+            <li><a href="/portfolio/summary">/portfolio/summary</a> <span class="desc">Portfolio valuation & totals</span></li>
+            <li><a href="/portfolio/history">/portfolio/history</a> <span class="desc">Portfolio history ticks</span></li>
+            <li><a href="/analytics/trades">/analytics/trades</a> <span class="desc">Per-instrument trade stats</span></li>
+            <li><a href="/analytics/summary">/analytics/summary</a> <span class="desc">Overall trading volume & P&L</span></li>
+            <li><a href="/analytics/timeline">/analytics/timeline</a> <span class="desc">Minute-by-minute timeline</span></li>
+            <li><a href="/export/holdings.csv">/export/holdings.csv</a> <span class="desc">Export holdings (CSV)</span></li>
+            <li><a href="/export/orders.csv">/export/orders.csv</a> <span class="desc">Export orders (CSV)</span></li>
+            <li><a href="/export/trade-analytics.csv">/export/trade-analytics.csv</a> <span class="desc">Export trade stats (CSV)</span></li>
+            <li><a href="/health">/health</a> <span class="desc">Server & DB health check</span></li>
+          </ul>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+  return res.json({
+    name: "TradeX API",
+    status: "running",
+    port: PORT,
+    endpoints: [
+      "/allHoldings",
+      "/allPositions",
+      "/allOrders",
+      "/quotes",
+      "/portfolio/summary",
+      "/portfolio/history",
+      "/analytics/trades",
+      "/analytics/summary",
+      "/analytics/timeline",
+      "/export/holdings.csv",
+      "/export/orders.csv",
+      "/export/trade-analytics.csv",
+      "/health"
+    ]
+  });
+});
+
 app.get("/allHoldings", async (req, res) => {
   try {
     const holdings = await getHoldings();

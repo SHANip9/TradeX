@@ -27,6 +27,7 @@ const children = services.map((service) => {
     cwd: service.cwd,
     env: { ...process.env, ...service.env },
     stdio: ["ignore", "pipe", "pipe"],
+    shell: true,
   });
 
   const prefix = `[${service.name}]`;

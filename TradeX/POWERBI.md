@@ -1,53 +1,46 @@
-# Power BI Dashboard — Prerequisites & Setup
+# TradeX Data Files for Power BI
 
-Everything you need to build the TradeX BI dashboard in Power BI.
+All data files are exported and ready in the [`data/`](file:///f:/Major%20Projects/TradeX/TradeX/data/) folder. You can import these directly into Power BI Desktop (or Excel / Python) to build your custom reports and dashboards.
 
-## Prerequisites
+---
 
-1. **Power BI Desktop** (free) — https://powerbi.microsoft.com/desktop/
-2. **TradeX API running** — `npm start` (API at `http://localhost:3002`).
-3. **MongoDB running** (recommended) so analytics use real aggregation pipelines:
-   - `backend/.env` → `MONGO_URL=mongodb://localhost:27017/tradex`
-4. **Data to visualise** — generate trades first:
-   - In the dashboard UI: Analytics tab → "Simulate 500 trades", or
-   - `curl -X POST http://localhost:3002/simulate -H "Content-Type: application/json" -d '{"events":500}'`, or
-   - `node backend/scripts/simulate-trades.js 500`
+## 📂 Available Datasets in `data/`
 
-## Option A — Web connector (simplest)
+| File | Description | Key Fields |
+| :--- | :--- | :--- |
+| [`data/holdings.csv`](file:///f:/Major%20Projects/TradeX/TradeX/data/holdings.csv) | Current stock portfolio holdings | `symbol`, `qty`, `avgCost`, `lastPrice`, `currentValue`, `investment`, `unrealizedPnl`, `netChange`, `dayChange` |
+| [`data/orders.csv`](file:///f:/Major%20Projects/TradeX/TradeX/data/orders.csv) | Individual order executions & trade logs | `orderId`, `symbol`, `mode` (BUY/SELL), `qty`, `price`, `value`, `avgCost`, `realizedPnl`, `createdAt` |
+| [`data/trade_analytics.csv`](file:///f:/Major%20Projects/TradeX/TradeX/data/trade_analytics.csv) | Aggregated trade metrics per instrument | `symbol`, `totalTrades`, `buyQty`, `sellQty`, `buyValue`, `sellValue`, `avgBuyPrice`, `avgSellPrice`, `realizedPnl`, `turnover`, `lastTradeAt` |
+| [`data/portfolio_history.csv`](file:///f:/Major%20Projects/TradeX/TradeX/data/portfolio_history.csv) | Time-series portfolio valuation tick history | `time`, `investment`, `currentValue`, `pnl`, `pnlPercent` |
 
-In Power BI Desktop: **Get Data → Web** and add these URLs:
+---
 
-| Dataset | URL |
-| --- | --- |
-| Holdings | `http://localhost:3002/export/holdings.csv` |
-| Orders / trades | `http://localhost:3002/export/orders.csv` |
-| Trade analytics | `http://localhost:3002/export/trade-analytics.csv` |
+## 📥 How to Import into Power BI Desktop
 
-JSON alternatives (Get Data → Web → same host): `/allOrders`,
-`/analytics/trades`, `/analytics/summary`, `/analytics/timeline`,
-`/portfolio/history`.
+1. Open **Power BI Desktop**.
+2. Click **Get Data → Text/CSV**.
+3. Browse to `f:\Major Projects\TradeX\TradeX\data\` and select:
+   - `holdings.csv`
+   - `orders.csv`
+   - `trade_analytics.csv`
+   - `portfolio_history.csv`
+4. Click **Load** (or **Transform Data** to inspect types).
 
-Use **Refresh** in Power BI to pull the latest data at any time.
+---
 
-## Option B — MongoDB connector (direct)
+## 🔄 How to Export Fresh / More Trade Data
 
-1. Install the **MongoDB BI Connector** or use **ODBC** (MongoDB ODBC driver).
-2. Connect to `mongodb://localhost:27017`, database `tradex`.
-3. Collections: `orders`, `holdings`, `positions`.
+When TradeX backend is running (`http://localhost:3002`):
 
-## Suggested visuals
-
-- **Card**: total trades, total turnover, realized P&L (`trade-analytics.csv`).
-- **Line chart**: portfolio value over time (`/portfolio/history` → `time` vs `currentValue`).
-- **Bar chart**: realized P&L by `symbol` (`trade-analytics.csv`).
-- **Donut**: turnover share by `symbol`.
-- **Table**: orders with `symbol`, `mode`, `qty`, `price`, `value`, `realizedPnl`, `createdAt`.
-- **Slicer**: `mode` (BUY/SELL) and `symbol`.
-
-## Field reference
-
-`orders.csv`: `orderId, symbol, mode, qty, price, value, avgCost, realizedPnl, createdAt`
-
-`holdings.csv`: `symbol, qty, avgCost, lastPrice, currentValue, investment, unrealizedPnl, netChange, dayChange`
-
-`trade-analytics.csv`: `symbol, totalTrades, buyQty, sellQty, buyValue, sellValue, avgBuyPrice, avgSellPrice, realizedPnl, turnover, lastTradeAt`
+1. **Simulate more trades** (e.g. 500 new trades):
+   ```powershell
+   Invoke-RestMethod -Uri "http://localhost:3002/simulate" -Method POST -ContentType "application/json" -Body '{"events":500}'
+   ```
+2. **Download updated CSV files into `data/`**:
+   ```powershell
+   Invoke-WebRequest -Uri "http://localhost:3002/export/holdings.csv" -OutFile "data\holdings.csv"
+   Invoke-WebRequest -Uri "http://localhost:3002/export/orders.csv" -OutFile "data\orders.csv"
+   Invoke-WebRequest -Uri "http://localhost:3002/export/trade-analytics.csv" -OutFile "data\trade_analytics.csv"
+   (Invoke-RestMethod -Uri "http://localhost:3002/portfolio/history") | Export-Csv -Path "data\portfolio_history.csv" -NoTypeInformation
+   ```
+3. In Power BI Desktop, click **Home → Refresh** to load the updated files.
