@@ -1,4 +1,4 @@
-# TradeX — Stock Exchange Platform
+# TradeX — a stock exchange platform
 
 Scalable MERN-stack stock exchange platform with MongoDB aggregation pipelines for
 trade-level analytics, real-time portfolio management, and P&L dashboards for
