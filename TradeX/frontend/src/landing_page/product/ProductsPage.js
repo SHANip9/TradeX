@@ -12,8 +12,8 @@ function ProductsPage() {
 
       <LeftSection
         imageURL="/media/images/kite.png"
-        productName="Kite"
-        productDescription="Our ultra-fast flagship trading platform with streaming market data, advanced charts, an elegant UI, and more. Enjoy the Kite experience seamlessly on your Android and iOS devices."
+        productName="TradeX Terminal"
+        productDescription="Our ultra-fast flagship trading platform with streaming market data, advanced charts, an elegant UI, and more. Enjoy the TradeX experience seamlessly on your Android and iOS devices."
         tryDemo="http://localhost:3001"
         learnMore="#kite"
         googlePlay="https://play.google.com/store/apps/details?id=com.zerodha.kite"
@@ -23,7 +23,7 @@ function ProductsPage() {
       <RightSection
         imageURL="/media/images/console.png"
         productName="Console"
-        productDescription="The central dashboard for your Zerodha account. Gain insights into your trades and investments with in-depth reports and visualisation."
+        productDescription="The central dashboard for your TradeX account. Gain insights into your trades and investments with in-depth reports and visualisation."
         tryDemo="#console"
         learnMore="#console-learn"
       />
@@ -40,8 +40,8 @@ function ProductsPage() {
 
       <RightSection
         imageURL="/media/images/kiteconnect.png"
-        productName="Kite Connect API"
-        productDescription="Build powerful trading platforms and experiences using the Kite Connect APIs. A robust set of REST APIs built for developers."
+        productName="TradeX Connect API"
+        productDescription="Build powerful trading platforms and experiences using the TradeX Connect APIs. A robust set of REST APIs built for developers."
         tryDemo="#connect"
         learnMore="#connect-learn"
       />

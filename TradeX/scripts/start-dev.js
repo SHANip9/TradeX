@@ -53,7 +53,7 @@ const shutdown = () => {
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
-console.log("Starting Zerodha clone:");
+console.log("Starting TradeX:");
 console.log("Frontend:  http://localhost:3000");
 console.log("Dashboard: http://localhost:3001");
 console.log("Backend:   http://localhost:3002");

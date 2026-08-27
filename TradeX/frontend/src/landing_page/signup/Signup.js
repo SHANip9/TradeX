@@ -16,7 +16,7 @@ function Signup() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setMessage("Account created for demo. Opening Kite dashboard...");
+    setMessage("Account created for demo. Opening TradeX dashboard...");
 
     window.setTimeout(() => {
       window.location.href = dashboardUrl;

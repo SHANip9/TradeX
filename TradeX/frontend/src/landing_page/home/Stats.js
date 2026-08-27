@@ -10,7 +10,7 @@ function Stats() {
 
           <h5 className="mb-2">Customer-first always</h5>
           <p className="text-muted">
-            That's why 1.3+ crore customers trust Zerodha with Rs. 3.5+ lakh
+            That's why 1.3+ crore customers trust TradeX with Rs. 3.5+ lakh
             crores worth of equity investments.
           </p>
 
@@ -20,7 +20,7 @@ function Stats() {
             High quality apps that you use at your pace, the way you like.
           </p>
 
-          <h5 className="mt-4 mb-2">The Zerodha universe</h5>
+          <h5 className="mt-4 mb-2">The TradeX universe</h5>
           <p className="text-muted">
             Not just an app, but a whole ecosystem. Our investments in 30+
             fintech startups offer you tailored services specific to your needs.
@@ -37,7 +37,7 @@ function Stats() {
         <div className="col-md-6 text-center">
           <img
             src="/media/images/ecosystem.png"
-            alt="Zerodha ecosystem"
+            alt="TradeX ecosystem"
             style={{ width: "90%" }}
           />
           <div className="text-center mt-4">
@@ -45,7 +45,7 @@ function Stats() {
               Explore our products <i className="fa fa-long-arrow-right" aria-hidden="true"></i>
             </Link>
             <a className="text-decoration-none" href="http://localhost:3001">
-              Try Kite demo <i className="fa fa-long-arrow-right" aria-hidden="true"></i>
+              Try TradeX demo <i className="fa fa-long-arrow-right" aria-hidden="true"></i>
             </a>
           </div>
         </div>

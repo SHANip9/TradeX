@@ -6,12 +6,18 @@ const Summary = () => {
   const [allHoldings, setAllHoldings] = useState(holdings);
 
   useEffect(() => {
-    api
-      .get("/allHoldings")
-      .then((res) => setAllHoldings(res.data))
-      .catch(() => {
-        setAllHoldings(holdings);
-      });
+    const fetchHoldings = () => {
+      api
+        .get("/allHoldings")
+        .then((res) => setAllHoldings(res.data))
+        .catch(() => {
+          setAllHoldings(holdings);
+        });
+    };
+
+    fetchHoldings();
+    const timer = setInterval(fetchHoldings, 3000);
+    return () => clearInterval(timer);
   }, []);
 
   const investment = allHoldings.reduce(

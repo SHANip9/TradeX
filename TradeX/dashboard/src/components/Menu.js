@@ -8,6 +8,7 @@ const Menu = () => {
 
   const menuItems = [
     { label: "Dashboard", path: "/" },
+    { label: "Analytics", path: "/analytics" },
     { label: "Orders", path: "/orders" },
     { label: "Holdings", path: "/holdings" },
     { label: "Positions", path: "/positions" },
@@ -17,7 +18,7 @@ const Menu = () => {
 
   return (
     <div className="menu-container">
-      <img src="logo.png" alt="Zerodha dashboard" style={{ width: "50px" }} />
+      <img src="logo.png" alt="TradeX dashboard" style={{ width: "50px" }} />
       <div className="menus">
         <ul>
           {menuItems.map((item) => (
@@ -39,7 +40,7 @@ const Menu = () => {
           className="profile"
           onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
         >
-          <div className="avatar">ZU</div>
+          <div className="avatar">TX</div>
           <p className="username">USERID</p>
           {isProfileDropdownOpen && (
             <div className="profile-dropdown">

@@ -16,7 +16,7 @@ function Hero() {
             <a href="#account-opening">Track account opening</a>
             <a href="#segment">Track segment activation</a>
             <a href="#margins">Intraday margins</a>
-            <a href="#manual">Kite user manual</a>
+            <a href="#manual">TradeX user manual</a>
           </div>
         </div>
 

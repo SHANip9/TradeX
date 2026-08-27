@@ -19,9 +19,9 @@ function Team() {
       {/* Text Column */}
       <div className="col-6 p-5">
         <p>
-          Nithin bootstrapped and founded Zerodha in 2010 to overcome the
+          Nithin bootstrapped and founded TradeX in 2010 to overcome the
           hurdles he faced during his decade long stint as a trader. Today,
-          Zerodha has changed the landscape of the Indian broking industry.
+          TradeX has changed the landscape of the Indian broking industry.
         </p>
         <p>
           He is a member of the SEBI Secondary Market Advisory Committee (SMAC)

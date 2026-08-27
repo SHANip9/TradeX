@@ -20,7 +20,7 @@ function Universe() {
     },
     {
       img: "/media/images/zerodhaFundhouse.png",
-      name: "Zerodha Fund House",
+      name: "TradeX Fund House",
       description: "Asset management",
     },
     {
@@ -37,7 +37,7 @@ function Universe() {
 
   return (
     <div className="container text-center my-5">
-      <h2>The Zerodha Universe</h2>
+      <h2>The TradeX Universe</h2>
       <p className="text-muted">
         Extend your trading and investment experience even further with our partner platforms
       </p>
