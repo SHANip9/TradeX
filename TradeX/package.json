@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "node scripts/start-dev.js",
+    "build": "npm --prefix frontend run build && npm --prefix dashboard run build",
+    "start:backend": "npm --prefix backend start",
+    "start:frontend": "npm --prefix frontend start",
+    "start:dashboard": "npm --prefix dashboard start"
+  },
+  "dependencies": {
+    "react-router-dom": "^7.6.3"
+  }
+}
