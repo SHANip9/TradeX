@@ -1,4 +1,4 @@
-# TradeX a stoc exchange platform
+# TradeX a stock exchange platform
 
 Full-stack Zerodha-style demo project with:
 
