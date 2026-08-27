@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import GeneralContext from "./GeneralContext";
 
@@ -13,12 +13,46 @@ import {
 
 import { watchlist } from "../data/data";
 import { DoughnutChart } from "./DoughnoutChart";
-
-const labels = watchlist.map((subArray) => subArray["name"]);
+import api from "../api";
 
 const WatchList = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const filteredWatchlist = watchlist.filter((stock) =>
+  const [liveWatchlist, setLiveWatchlist] = useState(watchlist);
+
+  useEffect(() => {
+    const fetchQuotes = () => {
+      api
+        .get("/quotes")
+        .then((res) => {
+          const quoteMap = new Map(
+            res.data.map((quote) => [quote.symbol, quote])
+          );
+          setLiveWatchlist(
+            watchlist.map((stock) => {
+              const quote = quoteMap.get(stock.name);
+              if (!quote) return stock;
+              const sign = quote.dayChangePercent >= 0 ? "+" : "";
+              return {
+                ...stock,
+                price: quote.price,
+                percent: `${sign}${quote.dayChangePercent.toFixed(2)}%`,
+                isDown: quote.dayChangePercent < 0,
+              };
+            })
+          );
+        })
+        .catch(() => {
+          setLiveWatchlist(watchlist);
+        });
+    };
+
+    fetchQuotes();
+    const timer = setInterval(fetchQuotes, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const labels = liveWatchlist.map((subArray) => subArray["name"]);
+  const filteredWatchlist = liveWatchlist.filter((stock) =>
     stock.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
@@ -27,7 +61,7 @@ const WatchList = () => {
     datasets: [
       {
         label: "Price",
-        data: watchlist.map((stock) => stock.price),
+        data: liveWatchlist.map((stock) => stock.price),
         backgroundColor: [
           "rgba(255, 99, 132, 0.5)",
           "rgba(54, 162, 235, 0.5)",

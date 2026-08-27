@@ -9,19 +9,19 @@ const ticketTopics = [
       "Offline Account Opening",
       "NRI Account Opening",
       "Company, Partnership and HUF Account Opening",
-      "Charges at Zerodha",
+      "Charges at TradeX",
       "Getting Started",
     ],
   },
   {
     icon: "fa-user",
-    title: "Your Zerodha Account",
+    title: "Your TradeX Account",
     links: ["Login credentials", "Your profile", "Account modification", "Client master report"],
   },
   {
     icon: "fa-line-chart",
     title: "Trading and Markets",
-    links: ["Trading FAQs", "Margins", "Product and order types", "Kite alerts"],
+    links: ["Trading FAQs", "Margins", "Product and order types", "TradeX alerts"],
   },
   {
     icon: "fa-credit-card",

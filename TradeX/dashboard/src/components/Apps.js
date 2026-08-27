@@ -6,7 +6,7 @@ const Apps = () => {
       <h3 className="title">Apps</h3>
       <div className="app-grid">
         <div>
-          <h4>Kite</h4>
+          <h4>TradeX Terminal</h4>
           <p>Trading terminal and market watch.</p>
         </div>
         <div>

@@ -8,16 +8,26 @@ const Holdings = () => {
   const [isOfflineData, setIsOfflineData] = useState(false);
 
   useEffect(() => {
-    api
-      .get("/allHoldings")
-      .then((res) => {
-        setAllHoldings(res.data);
-        setIsOfflineData(false);
-      })
-      .catch(() => {
-        setAllHoldings(holdings);
-        setIsOfflineData(true);
-      });
+    const fetchHoldings = () => {
+      api
+        .get("/allHoldings")
+        .then((res) => {
+          setAllHoldings(res.data);
+          setIsOfflineData(false);
+        })
+        .catch(() => {
+          setAllHoldings(holdings);
+          setIsOfflineData(true);
+        });
+    };
+
+    fetchHoldings();
+    const timer = setInterval(fetchHoldings, 3000);
+    window.addEventListener("orderPlaced", fetchHoldings);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("orderPlaced", fetchHoldings);
+    };
   }, []);
 
   const labels = allHoldings.map((subArray) => subArray["name"]);

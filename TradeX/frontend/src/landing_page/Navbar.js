@@ -9,7 +9,7 @@ function Navbar() {
           {/* ✅ Use correct image path and size */}
           <img 
             src="/media/images/logo.svg" 
-            alt="Zerodha Logo" 
+            alt="TradeX Logo" 
             style={{ height: "20px" }} 
           />
         </Link>

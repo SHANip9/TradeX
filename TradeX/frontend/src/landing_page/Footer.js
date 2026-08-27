@@ -8,7 +8,7 @@ function Footer() {
         <div className="row mt-5">
           <div className="col">
             <img src="/media/images/logo.svg" style={{ width: "40%" }} alt="Logo" />
-            <p>&copy; 2010-2026, Not Zerodha Broking Ltd. All rights reserved.</p>
+            <p>&copy; 2010-2026, Not TradeX Broking Ltd. All rights reserved.</p>
           </div>
 
           <div className="col">
@@ -40,7 +40,7 @@ function Footer() {
 
         <div className="footer-legal">
           <p>
-            Zerodha Broking Ltd.: Member of NSE &amp; BSE. This clone is for
+            TradeX Broking Ltd.: Member of NSE &amp; BSE. This clone is for
             learning/demo use and uses static content and local demo flows.
           </p>
           <p>

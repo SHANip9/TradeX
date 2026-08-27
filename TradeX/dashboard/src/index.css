@@ -877,3 +877,20 @@ hr {
   padding: 18px;
 }
 
+
+.analytics {
+  padding-bottom: 40px;
+}
+
+.chart-block {
+  margin: 24px 0;
+  max-width: 900px;
+}
+
+.profit {
+  color: rgb(72, 194, 55);
+}
+
+.loss {
+  color: rgb(250, 118, 78);
+}
