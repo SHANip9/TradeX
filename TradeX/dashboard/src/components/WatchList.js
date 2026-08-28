@@ -1,9 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
+/**
+ * ============================================================================
+ * Live Market WatchList & Quick Actions Component (WatchList.js)
+ * ============================================================================
+ * Purpose:
+ *   Left sidebar market watch showing active stock tickers, live LTP, percentage changes,
+ *   search filtering, hover action triggers (Buy/Sell modal, analytics), and portfolio allocation Doughnut chart.
+ *
+ * Key Functionalities:
+ *   - Real-time Polling: Fetches `/quotes` every 3 seconds to update stock prices.
+ *   - Instant Search: Filters watchlist dynamically as user types in the search bar.
+ *   - Action Window Triggers: Dispatches `openBuyWindow` from `GeneralContext`.
+ *   - Visual Allocation: Renders `DoughnutChart` displaying asset weightings.
+ * ============================================================================
+ */
 
+import React, { useContext, useEffect, useState } from "react";
 import GeneralContext from "./GeneralContext";
 
 import { Tooltip, Grow } from "@mui/material";
-
 import {
   BarChartOutlined,
   KeyboardArrowDown,
@@ -19,6 +33,7 @@ const WatchList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [liveWatchlist, setLiveWatchlist] = useState(watchlist);
 
+  // Poll live quotes from backend API
   useEffect(() => {
     const fetchQuotes = () => {
       api
@@ -51,11 +66,13 @@ const WatchList = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Filter watchlist items based on search input
   const labels = liveWatchlist.map((subArray) => subArray["name"]);
   const filteredWatchlist = liveWatchlist.filter((stock) =>
     stock.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
+  // Chart configuration for portfolio doughnut visualizer
   const data = {
     labels,
     datasets: [
@@ -85,6 +102,7 @@ const WatchList = () => {
 
   return (
     <div className="watchlist-container">
+      {/* Search Input Bar */}
       <div className="search-container">
         <input
           type="text"
@@ -98,12 +116,14 @@ const WatchList = () => {
         <span className="counts"> {filteredWatchlist.length} / 50</span>
       </div>
 
+      {/* Watchlist Stock Rows */}
       <ul className="list">
         {filteredWatchlist.map((stock) => {
           return <WatchListItem stock={stock} key={stock.name} />;
         })}
       </ul>
 
+      {/* Doughnut Chart Allocation Visualizer */}
       <DoughnutChart data={data} />
     </div>
   );
@@ -111,6 +131,10 @@ const WatchList = () => {
 
 export default WatchList;
 
+/**
+ * Individual WatchList Stock Item
+ * Displays stock symbol, day return, and price with hover action buttons.
+ */
 const WatchListItem = ({ stock }) => {
   const [showWatchlistActions, setShowWatchlistActions] = useState(false);
 
@@ -136,6 +160,9 @@ const WatchListItem = ({ stock }) => {
   );
 };
 
+/**
+ * Hover Action Buttons (Buy, Sell, Analytics, Options)
+ */
 const WatchListActions = ({ stock }) => {
   const generalContext = useContext(GeneralContext);
 
@@ -150,6 +177,7 @@ const WatchListActions = ({ stock }) => {
   return (
     <span className="actions">
       <span>
+        {/* Buy Button */}
         <Tooltip
           title="Buy (B)"
           placement="top"
@@ -161,6 +189,8 @@ const WatchListActions = ({ stock }) => {
             Buy
           </button>
         </Tooltip>
+
+        {/* Sell Button */}
         <Tooltip
           title="Sell (S)"
           placement="top"
@@ -172,6 +202,8 @@ const WatchListActions = ({ stock }) => {
             Sell
           </button>
         </Tooltip>
+
+        {/* Analytics Shortcut Button */}
         <Tooltip
           title="Analytics (A)"
           placement="top"
@@ -182,6 +214,8 @@ const WatchListActions = ({ stock }) => {
             <BarChartOutlined className="icon" />
           </button>
         </Tooltip>
+
+        {/* More Options Button */}
         <Tooltip title="More" placement="top" arrow TransitionComponent={Grow}>
           <button className="action" type="button">
             <MoreHoriz className="icon" />

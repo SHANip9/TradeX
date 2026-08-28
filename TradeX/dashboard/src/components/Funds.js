@@ -1,8 +1,20 @@
+/**
+ * ============================================================================
+ * Funds & Margin Management Component (Funds.js)
+ * ============================================================================
+ * Purpose:
+ *   Simulates brokerage account funds, margin requirements, and cash ledger.
+ *   - Displays available margin, used margin, opening balance, cash, and collateral.
+ *   - Provides action buttons for "Add funds" and "Withdraw" (instant UPI transfer simulation).
+ * ============================================================================
+ */
+
 import React from "react";
 
 const Funds = () => {
   return (
     <>
+      {/* Transfer Action Header */}
       <div className="funds">
         <p>Instant, zero-cost fund transfers with UPI </p>
         <button className="btn btn-green" type="button">
@@ -14,6 +26,7 @@ const Funds = () => {
       </div>
 
       <div className="row">
+        {/* Equity Margin Breakdown Table */}
         <div className="col">
           <span>
             <p>Equity</p>
@@ -77,6 +90,7 @@ const Funds = () => {
           </div>
         </div>
 
+        {/* Commodity Margin Segment Notice */}
         <div className="col">
           <div className="commodity">
             <p>You don't have a commodity account</p>

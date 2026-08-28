@@ -1,3 +1,15 @@
+/**
+ * ============================================================================
+ * Trading Dashboard Main Workspace (Dashboard.js)
+ * ============================================================================
+ * Purpose:
+ *   Two-column trading layout:
+ *     1. Left Column (Sidebar): Real-time Market Watchlist & interactive Buy/Sell triggers.
+ *     2. Right Column (Content): Route switcher displaying Summary, Analytics, Orders,
+ *        Holdings, Positions, Funds, or Apps.
+ * ============================================================================
+ */
+
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -5,7 +17,6 @@ import Analytics from "./Analytics";
 import Apps from "./Apps";
 import Funds from "./Funds";
 import Holdings from "./Holdings";
-
 import Orders from "./Orders";
 import Positions from "./Positions";
 import Summary from "./Summary";
@@ -15,9 +26,12 @@ import { GeneralContextProvider } from "./GeneralContext";
 const Dashboard = () => {
   return (
     <div className="dashboard-container">
+      {/* Left Sidebar: Market Watchlist wrapped in GeneralContext for order modals */}
       <GeneralContextProvider>
         <WatchList />
       </GeneralContextProvider>
+
+      {/* Main Workspace: Active Tab Views */}
       <div className="content">
         <Routes>
           <Route exact path="/" element={<Summary />} />

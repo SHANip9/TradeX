@@ -1,5 +1,26 @@
+/**
+ * ============================================================================
+ * Trade Analytics & Aggregation Engine (analytics.js)
+ * ============================================================================
+ * Purpose:
+ *   Performs deep business intelligence and quantitative analysis on executed orders:
+ *     1. Per-Stock Metrics: Trade counts, buy/sell volumes, turnover, avg executed prices, realized P&L.
+ *     2. Portfolio Summary: Total turnover, net realized P&L, top-traded instruments, BUY vs SELL breakdown.
+ *     3. Time-Series Timeline: Minute-by-minute trade volume and profit/loss curves.
+ *
+ * Architecture:
+ *   Provides dual execution pipelines:
+ *     - MongoDB Aggregation Pipelines (High performance via database query planner)
+ *     - In-Memory Reducers (Fallback when running without active MongoDB instance)
+ * ============================================================================
+ */
+
 const { round2 } = require("./portfolio");
 
+/**
+ * MongoDB Aggregation Pipeline for Per-Symbol Trade Statistics:
+ * Computes turnover, buy/sell volumes, average prices, and realized profits grouped by ticker.
+ */
 const tradeStatsPipeline = [
   {
     $addFields: {
@@ -44,6 +65,10 @@ const tradeStatsPipeline = [
   { $sort: { turnover: -1 } },
 ];
 
+/**
+ * MongoDB Aggregation Pipeline for High-Level Trading Dashboard Summary:
+ * Utilizes `$facet` to simultaneously calculate overall totals, top 5 instruments, and mode breakdown.
+ */
 const summaryPipeline = [
   {
     $addFields: {
@@ -108,6 +133,10 @@ const summaryPipeline = [
   },
 ];
 
+/**
+ * MongoDB Aggregation Pipeline for Minute-by-Minute Trading Timeline:
+ * Truncates order creation timestamps to 1-minute buckets for chart visualization.
+ */
 const timelinePipeline = [
   {
     $group: {
@@ -133,6 +162,9 @@ const timelinePipeline = [
   { $sort: { minute: 1 } },
 ];
 
+/**
+ * Generates an empty summary schema object.
+ */
 const emptySummary = () => ({
   totals: {
     totalTrades: 0,
@@ -146,6 +178,10 @@ const emptySummary = () => ({
   byMode: [],
 });
 
+/**
+ * In-Memory fallback calculation for per-stock trade statistics.
+ * @param {Array<Object>} orders - In-memory array of orders
+ */
 const tradeStatsFromMemory = (orders) => {
   const bySymbol = new Map();
 
@@ -204,6 +240,10 @@ const tradeStatsFromMemory = (orders) => {
     .sort((a, b) => b.turnover - a.turnover);
 };
 
+/**
+ * In-Memory fallback calculation for dashboard executive summary.
+ * @param {Array<Object>} orders - In-memory array of orders
+ */
 const summaryFromMemory = (orders) => {
   const result = emptySummary();
   const stats = tradeStatsFromMemory(orders);
@@ -246,6 +286,10 @@ const summaryFromMemory = (orders) => {
   return result;
 };
 
+/**
+ * In-Memory fallback calculation for minute-by-minute trading timeline.
+ * @param {Array<Object>} orders - In-memory array of orders
+ */
 const timelineFromMemory = (orders) => {
   const byMinute = new Map();
 

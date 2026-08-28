@@ -1,9 +1,21 @@
+/**
+ * ============================================================================
+ * Home Education & Community Component (Education.js)
+ * ============================================================================
+ * Purpose:
+ *   Promotes TradeX's financial literacy initiatives:
+ *     1. Varsity (comprehensive open stock market university)
+ *     2. TradingQ&A (active retail trader discussion forum)
+ * ============================================================================
+ */
+
 import React from "react";
 
 function Education() {
   return (
     <div className="container my-5">
       <div className="row align-items-center">
+        {/* Education Illustration */}
         <div className="col-md-6 text-center">
           <img
             src="/media/images/education.svg"
@@ -13,6 +25,7 @@ function Education() {
           />
         </div>
 
+        {/* Education & Community Programs */}
         <div className="col-md-6">
           <h1 className="mb-3 fw-bold">Free and open market education</h1>
           <p>

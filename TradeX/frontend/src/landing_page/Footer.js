@@ -1,3 +1,14 @@
+/**
+ * ============================================================================
+ * Landing Page Global Footer (Footer.js)
+ * ============================================================================
+ * Purpose:
+ *   Standard footer across all public TradeX pages.
+ *   - Categorized links (Company, Support, Account).
+ *   - Legal notices, regulatory compliance information (SEBI, NSE, BSE), and risk disclosures.
+ * ============================================================================
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -6,11 +17,13 @@ function Footer() {
     <footer className="site-footer">
       <div className="container border-top mt-5">
         <div className="row mt-5">
+          {/* Brand & Copyright */}
           <div className="col">
-            <img src="/media/images/logo.svg" style={{ width: "40%" }} alt="Logo" />
+            <img src="/media/images/TradeX.png" style={{ width: "50%" }} alt="TradeX Logo" />
             <p>&copy; 2010-2026, Not TradeX Broking Ltd. All rights reserved.</p>
           </div>
 
+          {/* Company Links */}
           <div className="col">
             <p>Company</p>
             <Link to="/about" className="text-muted text-decoration-none">About</Link><br />
@@ -21,15 +34,17 @@ function Footer() {
             <a href="#press" className="text-muted text-decoration-none">Press &amp; media</a>
           </div>
 
+          {/* Support Links */}
           <div className="col">
             <p>Support</p>
             <Link to="/support" className="text-muted text-decoration-none">Contact</Link><br />
             <Link to="/support" className="text-muted text-decoration-none">Support portal</Link><br />
-            <a href="#blog" className="text-muted text-decoration-none">Z-Connect blog</a><br />
+            <a href="#blog" className="text-muted text-decoration-none">TradeX Blog</a><br />
             <a href="#charges" className="text-muted text-decoration-none">List of charges</a><br />
             <a href="#downloads" className="text-muted text-decoration-none">Downloads &amp; resources</a>
           </div>
 
+          {/* Account Links */}
           <div className="col">
             <p>Account</p>
             <Link to="/signup" className="text-muted text-decoration-none">Open an account</Link><br />
@@ -38,6 +53,7 @@ function Footer() {
           </div>
         </div>
 
+        {/* Regulatory & Legal Risk Disclaimers */}
         <div className="footer-legal">
           <p>
             TradeX Broking Ltd.: Member of NSE &amp; BSE. This clone is for

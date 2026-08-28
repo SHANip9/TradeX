@@ -1,3 +1,16 @@
+/**
+ * ============================================================================
+ * Dashboard Mock Dataset & Fallback Seed (data.js)
+ * ============================================================================
+ * Purpose:
+ *   Provides offline fallback data for the Watchlist, Holdings, and Positions
+ *   components in case the backend server is unreachable.
+ * ============================================================================
+ */
+
+/**
+ * Default Watchlist: Popular Indian stocks with initial prices and trends
+ */
 export const watchlist = [
   {
     name: "INFY",
@@ -55,7 +68,9 @@ export const watchlist = [
   },
 ];
 
-// holdings
+/**
+ * Default Equity Holdings: Baseline mock portfolio with cost basis and LTP
+ */
 export const holdings = [
   {
     name: "BHARTIARTL",
@@ -168,7 +183,9 @@ export const holdings = [
   },
 ];
 
-// positions
+/**
+ * Default Open Positions: Active intraday & delivery positions
+ */
 export const positions = [
   {
     product: "CNC",

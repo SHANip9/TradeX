@@ -1,5 +1,15 @@
-import React, { useEffect, useState } from "react";
+/**
+ * ============================================================================
+ * Open Trading Positions Component (Positions.js)
+ * ============================================================================
+ * Purpose:
+ *   Displays active CNC (Cash & Carry) and Intraday (MIS) trading positions.
+ *   - Fetches positions from `/allPositions` endpoint with fallback to local mock data.
+ *   - Displays Product type, Instrument name, Quantity, Entry Price, LTP, and Net P&L.
+ * ============================================================================
+ */
 
+import React, { useEffect, useState } from "react";
 import { positions } from "../data/data";
 import api from "../api";
 
@@ -8,6 +18,7 @@ const Positions = () => {
   const [isOfflineData, setIsOfflineData] = useState(false);
 
   useEffect(() => {
+    // Fetch open positions from backend API
     api
       .get("/allPositions")
       .then((res) => {
@@ -27,6 +38,7 @@ const Positions = () => {
         <p className="inline-note">Showing starter positions because the API is unavailable.</p>
       )}
 
+      {/* Positions Data Table */}
       <div className="order-table">
         <table>
           <thead>

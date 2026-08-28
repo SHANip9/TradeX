@@ -1,3 +1,17 @@
+/**
+ * ============================================================================
+ * Financial Analytics & P&L Intelligence Dashboard (Analytics.js)
+ * ============================================================================
+ * Purpose:
+ *   Comprehensive analytical visualizer and load simulation console:
+ *     1. Executive KPI Cards: Total Trades, Overall Turnover, Realized P&L, Live Unrealized P&L.
+ *     2. Time-Series Line Chart (Chart.js): Live valuation curve vs. invested capital.
+ *     3. Bar Chart (Chart.js): Realized P&L breakdown by equity instrument.
+ *     4. Quantitative Trade Table: Buy/Sell quantities, turnover, weighted prices, profits.
+ *     5. Interactive Trade Simulator: "Simulate 500 trades" button triggers load test on backend.
+ * ============================================================================
+ */
+
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Chart as ChartJS,
@@ -14,6 +28,7 @@ import {
 import { Line, Bar } from "react-chartjs-2";
 import api from "../api";
 
+// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -28,6 +43,9 @@ ChartJS.register(
 
 const REFRESH_MS = 3000;
 
+/**
+ * Formats numerical values to Indian Rupee formatting (2 decimal places)
+ */
 const formatMoney = (value) =>
   Number(value || 0).toLocaleString("en-IN", {
     minimumFractionDigits: 2,
@@ -41,6 +59,9 @@ const Analytics = () => {
   const [error, setError] = useState("");
   const [isSimulating, setIsSimulating] = useState(false);
 
+  /**
+   * Fetches analytics summary, instrument breakdown, and valuation history concurrently
+   */
   const fetchAll = useCallback(async () => {
     try {
       const [summaryRes, tradesRes, historyRes] = await Promise.all([
@@ -57,12 +78,16 @@ const Analytics = () => {
     }
   }, []);
 
+  // Poll analytics endpoints every 3 seconds
   useEffect(() => {
     fetchAll();
     const timer = setInterval(fetchAll, REFRESH_MS);
     return () => clearInterval(timer);
   }, [fetchAll]);
 
+  /**
+   * Triggers background simulation of 500 orders and refreshes dashboard
+   */
   const handleSimulate = async () => {
     setIsSimulating(true);
     try {
@@ -78,6 +103,7 @@ const Analytics = () => {
   const totals = summary?.totals || {};
   const latest = history[history.length - 1];
 
+  // Configuration for Live Portfolio Valuation Line Chart
   const historyData = {
     labels: history.map((point) =>
       new Date(point.time).toLocaleTimeString("en-IN", { hour12: false })
@@ -103,6 +129,7 @@ const Analytics = () => {
     ],
   };
 
+  // Configuration for Realized P&L Bar Chart
   const topTrades = trades.slice(0, 10);
   const pnlData = {
     labels: topTrades.map((t) => t.symbol),
@@ -119,6 +146,7 @@ const Analytics = () => {
 
   return (
     <div className="analytics">
+      {/* Header and Simulation Trigger */}
       <h3 className="title">
         Analytics &amp; P&amp;L Dashboard
         <button
@@ -133,6 +161,7 @@ const Analytics = () => {
       </h3>
       {error && <p className="inline-note">{error}</p>}
 
+      {/* KPI Metrics Row */}
       <div className="row">
         <div className="col">
           <h5>{totals.totalTrades || 0}</h5>
@@ -156,6 +185,7 @@ const Analytics = () => {
         </div>
       </div>
 
+      {/* Line Chart: Portfolio Value Trend */}
       <div className="chart-block">
         <Line
           data={historyData}
@@ -170,6 +200,7 @@ const Analytics = () => {
         />
       </div>
 
+      {/* Bar Chart: P&L by Instrument */}
       <div className="chart-block">
         <Bar
           data={pnlData}
@@ -183,6 +214,7 @@ const Analytics = () => {
         />
       </div>
 
+      {/* Trade-Level Analytics Table */}
       <h3 className="title">Trade-level analytics ({trades.length})</h3>
       <div className="order-table">
         <table>

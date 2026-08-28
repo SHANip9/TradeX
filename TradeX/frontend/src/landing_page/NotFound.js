@@ -1,3 +1,13 @@
+/**
+ * ============================================================================
+ * 404 Page Not Found Component (NotFound.js)
+ * ============================================================================
+ * Purpose:
+ *   Fallback route handler when the user navigates to an invalid URL path.
+ *   Provides a clear error notice and a button linking back to the Homepage.
+ * ============================================================================
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
 

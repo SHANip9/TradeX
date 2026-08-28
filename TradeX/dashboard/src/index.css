@@ -289,7 +289,7 @@ code {
 }
 
 .menu.selected {
-  color: rgb(245, 104, 52);
+  color: #2563EB;
 }
 
 hr {
@@ -312,13 +312,13 @@ hr {
   position: relative;
   font-size: 0.7rem;
   font-weight: 400;
-  color: rgb(221, 139, 221);
+  color: #2563EB;
   justify-content: center;
   align-items: center;
   border-radius: 100%;
   text-align: center;
   display: flex;
-  background: rgb(252, 229, 252);
+  background: #DBEAFE;
   margin-right: 8px;
 }
 
@@ -348,7 +348,7 @@ hr {
 /* sudo selectors */
 
 .menu:hover {
-  color: rgb(245, 104, 52);
+  color: #2563EB;
 }
 
 .profile:hover {
@@ -357,7 +357,7 @@ hr {
 
 .profile:hover .username {
   cursor: pointer;
-  color: rgb(223, 91, 43);
+  color: #2563EB;
 }
 
 .orders {
@@ -846,9 +846,9 @@ hr {
 }
 
 .watchlist-number ul li:hover {
-  color: rgb(245, 104, 52);
+  color: #2563EB;
   cursor: pointer;
-  background: rgb(243, 243, 243);
+  background: #F0F5FF;
 }
 
 .settings:hover {

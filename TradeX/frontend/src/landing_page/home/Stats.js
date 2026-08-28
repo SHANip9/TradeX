@@ -1,3 +1,14 @@
+/**
+ * ============================================================================
+ * Home Trust & Ecosystem Statistics (Stats.js)
+ * ============================================================================
+ * Purpose:
+ *   Details client trust, ethical business philosophy, fintech ecosystem,
+ *   and money management features (Nudge & Kill Switch).
+ *   Provides direct link to Products page and live Dashboard demo.
+ * ============================================================================
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -5,6 +16,7 @@ function Stats() {
   return (
     <div className="container my-5">
       <div className="row align-items-center">
+        {/* Core Pillars / Value Points */}
         <div className="col-md-6">
           <h1 className="mb-4">Trust with confidence</h1>
 
@@ -34,6 +46,7 @@ function Stats() {
           </p>
         </div>
 
+        {/* Ecosystem Visual Graphic & Action Links */}
         <div className="col-md-6 text-center">
           <img
             src="/media/images/ecosystem.png"

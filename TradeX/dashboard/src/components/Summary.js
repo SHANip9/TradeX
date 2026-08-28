@@ -1,10 +1,28 @@
+/**
+ * ============================================================================
+ * Executive Account & Portfolio Summary (Summary.js)
+ * ============================================================================
+ * Purpose:
+ *   Default overview landing view inside the trading dashboard.
+ *   - Fetches live equity holdings from the backend API `/allHoldings` every 3 seconds.
+ *   - Dynamically calculates:
+ *       1. Total Capital Investment (Sum of avg * qty)
+ *       2. Current Portfolio Valuation (Sum of LTP * qty)
+ *       3. Net Unrealized Profit / Loss (Current Value - Investment)
+ *       4. Percentage Return (%)
+ *   - Displays available margin, margin utilized, and account status metrics.
+ * ============================================================================
+ */
+
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import { holdings } from "../data/data";
 
 const Summary = () => {
+  // Holdings state (initialized with offline fallback data)
   const [allHoldings, setAllHoldings] = useState(holdings);
 
+  // Poll backend API every 3 seconds for real-time valuation updates
   useEffect(() => {
     const fetchHoldings = () => {
       api
@@ -20,6 +38,7 @@ const Summary = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Compute portfolio valuation aggregates
   const investment = allHoldings.reduce(
     (sum, stock) => sum + stock.avg * stock.qty,
     0
@@ -33,11 +52,13 @@ const Summary = () => {
 
   return (
     <>
+      {/* User Greeting Section */}
       <div className="username">
         <h6>Hi, User!</h6>
         <hr className="divider" />
       </div>
 
+      {/* Margin & Available Capital Overview */}
       <div className="section">
         <span>
           <p>Equity</p>
@@ -62,6 +83,7 @@ const Summary = () => {
         <hr className="divider" />
       </div>
 
+      {/* Holdings & Real-time P&L Overview */}
       <div className="section">
         <span>
           <p>Holdings ({allHoldings.length})</p>

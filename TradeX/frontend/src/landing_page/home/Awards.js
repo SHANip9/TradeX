@@ -1,12 +1,26 @@
+/**
+ * ============================================================================
+ * Home Awards & Market Leadership Component (Awards.js)
+ * ============================================================================
+ * Purpose:
+ *   Highlights TradeX's position as India's largest retail stock broker.
+ *   - Lists asset classes supported (F&O, Commodities, Currencies, Stocks, MFs, Bonds).
+ *   - Displays national press media logos.
+ * ============================================================================
+ */
+
 import React from "react";
 
 function Awards() {
   return (
     <div className="container mt-5">
       <div className="row">
+        {/* Market Leader Illustration */}
         <div className="col-6 p-5">
           <img src="/media/images/largestBroker.svg" alt="Largest broker" />
         </div>
+
+        {/* Accomplishments and Market Segments */}
         <div className="col-6 p-5 mt-5">
           <h1>Largest stock broker in India</h1>
           <p className="mb-5">
@@ -30,6 +44,8 @@ function Awards() {
               </ul>
             </div>
           </div>
+
+          {/* Press and News Coverage Logos */}
           <img src="/media/images/pressLogos.png" alt="Press logos" style={{ width: "90%" }} />
         </div>
       </div>

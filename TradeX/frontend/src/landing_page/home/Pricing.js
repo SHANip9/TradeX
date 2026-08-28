@@ -1,3 +1,13 @@
+/**
+ * ============================================================================
+ * Home Pricing Snapshot Component (Pricing.js)
+ * ============================================================================
+ * Purpose:
+ *   Summary pricing card showcase on the homepage highlighting Rs. 0 delivery
+ *   and flat Rs. 20 intraday / F&O charges.
+ * ============================================================================
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -5,6 +15,7 @@ function Pricing() {
   return (
     <div className="container my-5">
       <div className="row align-items-center">
+        {/* Value Proposition Description */}
         <div className="col-md-6">
           <h1 className="fw-bold">Unbeatable pricing</h1>
           <p>
@@ -16,6 +27,7 @@ function Pricing() {
           </Link>
         </div>
 
+        {/* Pricing Cards */}
         <div className="col-md-6">
           <div className="d-flex border rounded overflow-hidden">
             <div className="col p-4 text-center border-end">

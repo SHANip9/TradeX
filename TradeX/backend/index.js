@@ -1,19 +1,48 @@
+/**
+ * ============================================================================
+ * TradeX Backend Main Server (index.js)
+ * ============================================================================
+ * Purpose:
+ *   Express.js API Server providing RESTful endpoints, real-time market simulation,
+ *   portfolio analytics, order execution, data exports (CSV), and health diagnostics.
+ *
+ * Architecture & Features:
+ *   1. Dual Storage Engine:
+ *      - Primary: MongoDB Atlas via Mongoose (Persistent)
+ *      - Fallback: High-speed In-Memory Mock Store (Offline demo resilience)
+ *   2. Real-Time Price Simulation:
+ *      - `priceEngine` emits tick events every 3 seconds to update stock prices.
+ *      - Dynamically updates active holdings and calculates total portfolio history.
+ *   3. Financial Analytics & Pipeline:
+ *      - Order aggregation, turnover calculation, realized/unrealized profit & loss.
+ *   4. Export Engine:
+ *      - Exports Holdings, Orders, and Trade Analytics as formatted CSVs for Power BI.
+ * ============================================================================
+ */
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dns = require("dns");
 require("dotenv").config();
 
+// Mongoose Models for Database Collections
 const { HoldingsModel } = require("./model/HoldingsModel");
 const { PositionsModel } = require("./model/PositionsModel");
 const { OrdersModel } = require("./model/OrdersModel");
+
+// Default starter seed data for initialization and fallback
 const { defaultHoldings, defaultPositions } = require("./data/defaultData");
+
+// Utility & Diagnostic modules
 const {
   getMongoHost,
   getMongoTroubleshootingHint,
   redactMongoUrl,
 } = require("./utils/mongoStatus");
 const { toCsv } = require("./utils/csv");
+
+// Business Logic Services
 const { priceEngine, portfolioHistory } = require("./services/priceEngine");
 const {
   applyOrderToMongo,
@@ -32,8 +61,11 @@ const {
   timelineFromMemory,
 } = require("./services/analytics");
 
+// Port Configuration (Default: 3002)
 const PORT = process.env.PORT || 3002;
 const uri = process.env.MONGO_URL;
+
+// Configure custom DNS servers (e.g. Google 8.8.8.8, Cloudflare 1.1.1.1) to resolve Atlas SRV records
 const dnsServers = (process.env.DNS_SERVERS || "8.8.8.8,1.1.1.1")
   .split(",")
   .map((server) => server.trim())
@@ -44,6 +76,8 @@ if (dnsServers.length > 0) {
 }
 
 const app = express();
+
+// Global Runtime State Variables
 let isMongoConnected = false;
 let mongoConnectionError = "";
 let mongoConnectionHint = "";
@@ -53,9 +87,13 @@ const memoryHoldings = defaultHoldings.map((holding, index) => ({
   ...holding,
 }));
 
+// Express Middleware
 app.use(cors());
 app.use(express.json());
 
+/**
+ * Seeds initial stock holdings and positions into MongoDB if the collections are empty.
+ */
 const seedStarterData = async () => {
   const holdingsCount = await HoldingsModel.countDocuments();
   if (holdingsCount === 0) {
@@ -68,6 +106,10 @@ const seedStarterData = async () => {
   }
 };
 
+/**
+ * Connects to MongoDB Atlas cluster.
+ * Gracefully falls back to in-memory state if connection fails or MONGO_URL is missing.
+ */
 const connectDB = async () => {
   if (!uri) {
     console.warn("MONGO_URL is missing. Using in-memory starter data.");
@@ -92,6 +134,9 @@ const connectDB = async () => {
   }
 };
 
+/**
+ * Helper to fetch holdings from MongoDB if connected, or memoryHoldings otherwise.
+ */
 const getHoldings = async () => {
   if (!isMongoConnected) {
     return memoryHoldings;
@@ -99,11 +144,17 @@ const getHoldings = async () => {
   return HoldingsModel.find({}).lean();
 };
 
+/**
+ * Registers all portfolio symbols with the price engine so they receive live market quotes.
+ */
 const registerHoldingSymbols = async () => {
   const holdings = await getHoldings();
   holdings.forEach((holding) => priceEngine.register(holding.name, holding.price));
 };
 
+/**
+ * Updates prices across all holdings based on live quotation ticks from PriceEngine.
+ */
 const applyQuotesToHoldings = async (quotes) => {
   const quoteMap = new Map(quotes.map((quote) => [quote.symbol, quote]));
 
@@ -155,6 +206,7 @@ const applyQuotesToHoldings = async (quotes) => {
   return holdings;
 };
 
+// Listen to market price ticks to recalculate portfolio value and record timeline history
 priceEngine.on("tick", async (quotes) => {
   try {
     const holdings = await applyQuotesToHoldings(quotes);
@@ -165,6 +217,10 @@ priceEngine.on("tick", async (quotes) => {
   }
 });
 
+/**
+ * Persists an order to either MongoDB or in-memory array,
+ * simultaneously updating weighted average cost and realized P&L on holdings.
+ */
 const persistOrder = async (order) => {
   const quote = priceEngine.getQuote(order.name);
   if (!quote) {
@@ -188,6 +244,9 @@ const persistOrder = async (order) => {
   return OrdersModel.create({ ...order, avgCost, realizedPnl });
 };
 
+/**
+ * Validates and parses incoming order payloads.
+ */
 const parseOrder = (body) => {
   const order = {
     name: String(body.name || "").trim().toUpperCase(),
@@ -211,6 +270,13 @@ const parseOrder = (body) => {
   return { order };
 };
 
+// ============================================================================
+// API ROUTES & ENDPOINTS
+// ============================================================================
+
+/**
+ * GET / - Server status dashboard & API index
+ */
 app.get("/", (req, res) => {
   if (req.accepts("html")) {
     return res.send(`
@@ -294,6 +360,9 @@ app.get("/", (req, res) => {
   });
 });
 
+/**
+ * GET /allHoldings - Returns all current stock holdings
+ */
 app.get("/allHoldings", async (req, res) => {
   try {
     const holdings = await getHoldings();
@@ -303,6 +372,9 @@ app.get("/allHoldings", async (req, res) => {
   }
 });
 
+/**
+ * GET /allPositions - Returns current trading positions (CNC / Intraday)
+ */
 app.get("/allPositions", async (req, res) => {
   try {
     if (!isMongoConnected) {
@@ -316,6 +388,9 @@ app.get("/allPositions", async (req, res) => {
   }
 });
 
+/**
+ * GET /allOrders - Returns list of executed orders
+ */
 app.get("/allOrders", async (req, res) => {
   try {
     if (!isMongoConnected) {
@@ -329,6 +404,9 @@ app.get("/allOrders", async (req, res) => {
   }
 });
 
+/**
+ * POST /newOrder - Places and executes a new stock order (BUY/SELL)
+ */
 app.post("/newOrder", async (req, res) => {
   try {
     const { order, error } = parseOrder(req.body);
@@ -343,6 +421,9 @@ app.post("/newOrder", async (req, res) => {
   }
 });
 
+/**
+ * DELETE /orders/:id - Cancels / removes an order record by ID
+ */
 app.delete("/orders/:id", async (req, res) => {
   try {
     if (!isMongoConnected) {
@@ -357,10 +438,16 @@ app.delete("/orders/:id", async (req, res) => {
   }
 });
 
+/**
+ * GET /quotes - Returns live ticker quotes for all active stocks
+ */
 app.get("/quotes", (req, res) => {
   res.json(priceEngine.getQuotes());
 });
 
+/**
+ * GET /portfolio/summary - Computes aggregate investment, value, and P&L
+ */
 app.get("/portfolio/summary", async (req, res) => {
   try {
     const holdings = await getHoldings();
@@ -370,10 +457,16 @@ app.get("/portfolio/summary", async (req, res) => {
   }
 });
 
+/**
+ * GET /portfolio/history - Returns time-series valuation ticks for chart visualizer
+ */
 app.get("/portfolio/history", (req, res) => {
   res.json(portfolioHistory.getAll());
 });
 
+/**
+ * GET /analytics/trades - Returns per-instrument statistics (turnover, avg prices, realized P&L)
+ */
 app.get("/analytics/trades", async (req, res) => {
   try {
     if (!isMongoConnected) {
@@ -387,6 +480,9 @@ app.get("/analytics/trades", async (req, res) => {
   }
 });
 
+/**
+ * GET /analytics/summary - High level summary of trade counts, turnover, and mode breakdown
+ */
 app.get("/analytics/summary", async (req, res) => {
   try {
     if (!isMongoConnected) {
@@ -406,6 +502,9 @@ app.get("/analytics/summary", async (req, res) => {
   }
 });
 
+/**
+ * GET /analytics/timeline - Aggregates trade volume and P&L by minute
+ */
 app.get("/analytics/timeline", async (req, res) => {
   try {
     if (!isMongoConnected) {
@@ -419,6 +518,9 @@ app.get("/analytics/timeline", async (req, res) => {
   }
 });
 
+/**
+ * POST /simulate - Stress test endpoint to trigger N randomized trade executions
+ */
 app.post("/simulate", async (req, res) => {
   try {
     const events = Math.min(Math.max(Number(req.body?.events) || 500, 1), 5000);
@@ -454,12 +556,18 @@ app.post("/simulate", async (req, res) => {
   }
 });
 
+/**
+ * Helper to stream CSV response with attachment header
+ */
 const sendCsv = (res, filename, rows, columns) => {
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
   res.send(toCsv(rows, columns));
 };
 
+/**
+ * GET /export/holdings.csv - Exports current holdings table in CSV format
+ */
 app.get("/export/holdings.csv", async (req, res) => {
   try {
     const holdings = await getHoldings();
@@ -490,6 +598,9 @@ app.get("/export/holdings.csv", async (req, res) => {
   }
 });
 
+/**
+ * GET /export/orders.csv - Exports order execution audit log in CSV format
+ */
 app.get("/export/orders.csv", async (req, res) => {
   try {
     const orders = isMongoConnected
@@ -522,6 +633,9 @@ app.get("/export/orders.csv", async (req, res) => {
   }
 });
 
+/**
+ * GET /export/trade-analytics.csv - Exports quantitative trade analytics summary in CSV format
+ */
 app.get("/export/trade-analytics.csv", async (req, res) => {
   try {
     const stats = isMongoConnected
@@ -549,6 +663,9 @@ app.get("/export/trade-analytics.csv", async (req, res) => {
   }
 });
 
+/**
+ * GET /health - Diagnostics endpoint reporting DB status, cluster host, and error traces
+ */
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
@@ -559,6 +676,7 @@ app.get("/health", (req, res) => {
   });
 });
 
+// Start Server and boot price engine
 connectDB().finally(async () => {
   try {
     await registerHoldingSymbols();

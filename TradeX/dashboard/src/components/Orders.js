@@ -1,3 +1,16 @@
+/**
+ * ============================================================================
+ * Order Book & Trade History Component (Orders.js)
+ * ============================================================================
+ * Purpose:
+ *   Lists all executed BUY and SELL orders in reverse chronological order.
+ *   - Fetches historical orders from `/allOrders`.
+ *   - Updates automatically when new orders are placed via `orderPlaced` event listener.
+ *   - Allows deleting / canceling individual orders via `DELETE /orders/:id`.
+ *   - Formats execution timestamp, order mode (BUY/SELL), instrument, qty, price, and status.
+ * ============================================================================
+ */
+
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api";
@@ -7,6 +20,9 @@ const Orders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
+  /**
+   * Fetches latest executed orders from backend API
+   */
   const fetchOrders = useCallback(() => {
     setIsLoading(true);
     api
@@ -23,11 +39,15 @@ const Orders = () => {
 
   useEffect(() => {
     fetchOrders();
+    // Re-fetch orders whenever a new trade order is submitted in the app
     window.addEventListener("orderPlaced", fetchOrders);
 
     return () => window.removeEventListener("orderPlaced", fetchOrders);
   }, [fetchOrders]);
 
+  /**
+   * Deletes an order record from database/memory
+   */
   const handleDelete = async (id) => {
     await api.delete(`/orders/${id}`);
     fetchOrders();
@@ -42,15 +62,16 @@ const Orders = () => {
       <h3 className="title">Orders ({orders.length})</h3>
       {error && <p className="inline-note">{error}</p>}
 
+      {/* Empty State when no orders exist */}
       {orders.length === 0 ? (
         <div className="no-orders">
           <p>You haven't placed any orders today</p>
-
           <Link to="/" className="btn">
             Get started
           </Link>
         </div>
       ) : (
+        /* Orders History Data Table */
         <div className="order-table">
           <table>
             <thead>

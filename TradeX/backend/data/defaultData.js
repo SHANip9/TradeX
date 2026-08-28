@@ -1,3 +1,19 @@
+/**
+ * ============================================================================
+ * Default Mock Data Seed (defaultData.js)
+ * ============================================================================
+ * Purpose:
+ *   Contains default baseline stock portfolio holdings and active positions.
+ *   Used in two situations:
+ *     1. Seeding MongoDB upon first boot if collections are empty.
+ *     2. In-memory fallback if MongoDB connection is unavailable (offline demo mode).
+ * ============================================================================
+ */
+
+/**
+ * Starter Holdings: Baseline equity investments representing Indian equities
+ * across multiple sectors (IT, Banking, FMCG, Energy, Auto).
+ */
 const defaultHoldings = [
   {
     name: "BHARTIARTL",
@@ -118,6 +134,9 @@ const defaultHoldings = [
   },
 ];
 
+/**
+ * Starter Positions: Open Cash & Carry (CNC) / Intraday positions.
+ */
 const defaultPositions = [
   {
     product: "CNC",

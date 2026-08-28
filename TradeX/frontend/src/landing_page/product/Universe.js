@@ -1,3 +1,18 @@
+/**
+ * ============================================================================
+ * Partner Ecosystem Universe Component (Universe.js)
+ * ============================================================================
+ * Purpose:
+ *   Grid display of integrated fintech partner platforms:
+ *     - smallcase (Thematic baskets)
+ *     - Streak (Algorithmic strategy backtesting)
+ *     - Sensibull (Options trading)
+ *     - TradeX Fund House (Asset management)
+ *     - GoldenPi (Bonds)
+ *     - Ditto (Insurance)
+ * ============================================================================
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -19,7 +34,7 @@ function Universe() {
       description: "Options trading platform",
     },
     {
-      img: "/media/images/zerodhaFundhouse.png",
+      img: "/media/images/TradeX.png",
       name: "TradeX Fund House",
       description: "Asset management",
     },
@@ -42,6 +57,7 @@ function Universe() {
         Extend your trading and investment experience even further with our partner platforms
       </p>
 
+      {/* Partner Platforms Grid */}
       <div className="row mt-5">
         {platforms.map((platform) => (
           <div className="col-md-4 col-sm-6 mb-5" key={platform.name}>
@@ -52,6 +68,7 @@ function Universe() {
         ))}
       </div>
 
+      {/* Signup CTA */}
       <Link className="btn btn-primary fs-5 p-2 signup-cta" to="/signup">
         Sign up now
       </Link>

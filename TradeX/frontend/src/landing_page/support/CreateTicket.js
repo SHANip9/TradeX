@@ -1,5 +1,21 @@
+/**
+ * ============================================================================
+ * Support Ticket Category Matrix (CreateTicket.js)
+ * ============================================================================
+ * Purpose:
+ *   Displays a structured 6-category grid for customer assistance:
+ *     1. Account Opening
+ *     2. Your TradeX Account
+ *     3. Trading and Markets
+ *     4. Funds
+ *     5. Console
+ *     6. Coin
+ * ============================================================================
+ */
+
 import React from "react";
 
+// Categorized Help Topics Configuration
 const ticketTopics = [
   {
     icon: "fa-plus-circle",
@@ -45,6 +61,7 @@ function CreateTicket() {
     <div className="container" id="tickets">
       <div className="row p-5 mt-5 mb-5">
         <h1 className="fs-2">To create a ticket, select a relevant topic</h1>
+        {/* Render 6 category blocks */}
         {ticketTopics.map((topic) => (
           <div className="col-md-4 p-5 mt-2 mb-2" key={topic.title}>
             <h4>

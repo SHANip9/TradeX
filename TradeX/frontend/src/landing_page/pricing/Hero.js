@@ -1,15 +1,31 @@
+/**
+ * ============================================================================
+ * Pricing Hero Section (Hero.js)
+ * ============================================================================
+ * Purpose:
+ *   Visual 3-column breakdown of core brokerage fees:
+ *     1. Free Equity Delivery (Rs 0)
+ *     2. Intraday and F&O (Flat Rs 20 or 0.03%)
+ *     3. Free Direct Mutual Funds (Rs 0 commission)
+ * ============================================================================
+ */
+
 import React from "react";
 
 function Hero() {
   return (
     <div className="container">
+      {/* Title Header */}
       <div className="row p-5 mt-5 border-bottom text-center">
         <h1>Pricing</h1>
         <h3 className="text-muted mt-3 fs-5">
           Free equity investments and flat Rs. 20 intraday and F&amp;O trades
         </h3>
       </div>
+
+      {/* 3 Fee Structure Columns */}
       <div className="row p-5 mt-5 text-center">
+        {/* Equity Delivery */}
         <div className="col-md-4 p-4">
           <img src="/media/images/pricingEquity.svg" alt="Equity delivery" />
           <h1 className="fs-1">Free equity delivery</h1>
@@ -19,6 +35,7 @@ function Hero() {
           </p>
         </div>
 
+        {/* Intraday & Derivatives */}
         <div className="col-md-4 p-5">
           <img src="/media/images/intradayTrades.svg" alt="Intraday trades" />
           <h1>Intraday and F&amp;O trades</h1>
@@ -28,6 +45,7 @@ function Hero() {
           </p>
         </div>
 
+        {/* Direct Mutual Funds */}
         <div className="col-md-4 p-5">
           <img src="/media/images/pricingMF.svg" alt="Direct mutual funds" />
           <h1>Free direct MF</h1>

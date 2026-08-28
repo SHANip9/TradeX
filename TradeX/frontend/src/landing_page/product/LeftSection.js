@@ -1,3 +1,13 @@
+/**
+ * ============================================================================
+ * Left-Aligned Product Showcase Card (LeftSection.js)
+ * ============================================================================
+ * Purpose:
+ *   Reusable layout showing product illustration on the left, and description,
+ *   demo link, learn more link, and app store download badges on the right.
+ * ============================================================================
+ */
+
 import React from "react";
 
 function LeftSection({
@@ -12,9 +22,12 @@ function LeftSection({
   return (
     <div className="container mt-5 mb-5">
       <div className="row align-items-center">
+        {/* Left Side: Product Screenshot */}
         <div className="col-md-6 p-3 text-center">
           <img src={imageURL} alt={productName} className="img-fluid" />
         </div>
+
+        {/* Right Side: Product Details & Download Badges */}
         <div className="col-md-6">
           <h1>{productName}</h1>
           <p>{productDescription}</p>

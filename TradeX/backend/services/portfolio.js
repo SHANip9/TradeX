@@ -1,5 +1,33 @@
+/**
+ * ============================================================================
+ * Portfolio Calculation & Position Tracking Engine (portfolio.js)
+ * ============================================================================
+ * Purpose:
+ *   Core financial math engine for calculating weighted average cost,
+ *   realized profit & loss (P&L), unrealized gains, day return percentages,
+ *   and applying BUY / SELL transactions to database or in-memory stores.
+ *
+ * Key Concepts:
+ *   - Weighted Average Cost: On BUY, newAvg = (oldAvg * oldQty + price * qty) / totalQty
+ *   - Realized P&L: On SELL, realizedPnl = (sellPrice - avgCost) * soldQty
+ *   - Hybrid Persistence: Handles both MongoDB documents and in-memory arrays.
+ * ============================================================================
+ */
+
+/**
+ * Rounds a number to exactly two decimal places.
+ * @param {number|string} value - Numerical input
+ * @returns {number} - Rounded 2-decimal number
+ */
 const round2 = (value) => Number(Number(value).toFixed(2));
 
+/**
+ * Computes return percentage and formatted string with positive (+) / negative sign.
+ *
+ * @param {number} avg - Average cost price
+ * @param {number} price - Current market price
+ * @returns {{ net: string, isLoss: boolean }} - Formatted percentage and loss indicator
+ */
 const changeStrings = (avg, price) => {
   const netPercent = avg > 0 ? ((price - avg) / avg) * 100 : 0;
   const sign = netPercent >= 0 ? "+" : "";
@@ -9,6 +37,15 @@ const changeStrings = (avg, price) => {
   };
 };
 
+/**
+ * Recalculates holding metrics after a BUY order.
+ * Updates quantity, recalculates weighted average price, and updates P&L.
+ *
+ * @param {Object|null} holding - Existing holding object or null if new stock
+ * @param {number} qty - Added quantity
+ * @param {number} price - Purchase price
+ * @returns {Object} - Updated holding fields
+ */
 const applyBuy = (holding, qty, price) => {
   const prevQty = holding ? holding.qty : 0;
   const prevAvg = holding ? holding.avg : 0;
@@ -26,6 +63,15 @@ const applyBuy = (holding, qty, price) => {
   };
 };
 
+/**
+ * Recalculates holding metrics after a SELL order.
+ * Deducts sold quantity, computes realized P&L based on cost basis, and removes holding if qty <= 0.
+ *
+ * @param {Object|null} holding - Existing holding object
+ * @param {number} qty - Sold quantity
+ * @param {number} price - Sell price
+ * @returns {Object} - Result with update instruction, soldQty, avgCost, and realizedPnl
+ */
 const applySell = (holding, qty, price) => {
   if (!holding) {
     return { update: null, soldQty: 0, avgCost: 0, realizedPnl: 0 };
@@ -56,6 +102,13 @@ const applySell = (holding, qty, price) => {
   };
 };
 
+/**
+ * Applies a new order (BUY/SELL) directly to MongoDB collection.
+ *
+ * @param {Model} HoldingsModel - Mongoose Holdings Model
+ * @param {Object} order - Executed order details { name, qty, price, mode }
+ * @returns {Promise<{ avgCost: number, realizedPnl: number }>}
+ */
 const applyOrderToMongo = async (HoldingsModel, order) => {
   const holding = await HoldingsModel.findOne({ name: order.name });
 
@@ -86,6 +139,13 @@ const applyOrderToMongo = async (HoldingsModel, order) => {
   return { avgCost, realizedPnl };
 };
 
+/**
+ * Applies a new order (BUY/SELL) to in-memory holdings array when DB is offline.
+ *
+ * @param {Array<Object>} memoryHoldings - In-memory holdings list
+ * @param {Object} order - Executed order details
+ * @returns {{ avgCost: number, realizedPnl: number }}
+ */
 const applyOrderToMemory = (memoryHoldings, order) => {
   const index = memoryHoldings.findIndex((h) => h.name === order.name);
   const holding = index >= 0 ? memoryHoldings[index] : null;
@@ -121,6 +181,13 @@ const applyOrderToMemory = (memoryHoldings, order) => {
   return { avgCost, realizedPnl };
 };
 
+/**
+ * Computes portfolio valuation summary across all holdings:
+ * Total Investment, Current Portfolio Value, Unrealized P&L, and Return %.
+ *
+ * @param {Array<Object>} holdings - Array of current stock holdings
+ * @returns {{ investment: number, currentValue: number, pnl: number, pnlPercent: number }}
+ */
 const portfolioTotals = (holdings) => {
   const investment = holdings.reduce((sum, h) => sum + h.avg * h.qty, 0);
   const currentValue = holdings.reduce((sum, h) => sum + h.price * h.qty, 0);

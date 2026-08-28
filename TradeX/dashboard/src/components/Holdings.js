@@ -1,3 +1,16 @@
+/**
+ * ============================================================================
+ * Equity Holdings Portfolio Component (Holdings.js)
+ * ============================================================================
+ * Purpose:
+ *   Displays long-term stock portfolio holdings in an interactive data table.
+ *   - Auto-refreshes holdings from `/allHoldings` every 3 seconds & upon new order placement.
+ *   - Calculates aggregate Investment, Current Value, and Net P&L in Indian Rupees (INR).
+ *   - Renders a bar graph (`VerticalGraph`) showing stock price comparisons across instruments.
+ *   - Color codes profit (green) and loss (red) values.
+ * ============================================================================
+ */
+
 import React, { useEffect, useState } from "react";
 import { VerticalGraph } from "./VerticalGraph";
 import api from "../api";
@@ -8,6 +21,7 @@ const Holdings = () => {
   const [isOfflineData, setIsOfflineData] = useState(false);
 
   useEffect(() => {
+    // Fetches live holdings list from backend API
     const fetchHoldings = () => {
       api
         .get("/allHoldings")
@@ -23,13 +37,16 @@ const Holdings = () => {
 
     fetchHoldings();
     const timer = setInterval(fetchHoldings, 3000);
+    // Listen for custom window event emitted when an order is submitted
     window.addEventListener("orderPlaced", fetchHoldings);
+
     return () => {
       clearInterval(timer);
       window.removeEventListener("orderPlaced", fetchHoldings);
     };
   }, []);
 
+  // Compute portfolio valuation aggregates
   const labels = allHoldings.map((subArray) => subArray["name"]);
   const totalInvestment = allHoldings.reduce(
     (sum, stock) => sum + stock.avg * stock.qty,
@@ -42,6 +59,7 @@ const Holdings = () => {
   const pnl = currentValue - totalInvestment;
   const pnlPercent = totalInvestment ? (pnl / totalInvestment) * 100 : 0;
 
+  // Chart data structure for VerticalGraph
   const data = {
     labels,
     datasets: [
@@ -60,6 +78,7 @@ const Holdings = () => {
         <p className="inline-note">Showing starter holdings because the API is unavailable.</p>
       )}
 
+      {/* Holdings Data Table */}
       <div className="order-table">
         <table>
           <thead>
@@ -101,6 +120,7 @@ const Holdings = () => {
         </table>
       </div>
 
+      {/* Portfolio Valuation Summary Metrics Row */}
       <div className="row">
         <div className="col">
           <h5>
@@ -131,6 +151,8 @@ const Holdings = () => {
           <p>P&amp;L</p>
         </div>
       </div>
+
+      {/* Visual Chart of Stock Prices */}
       <VerticalGraph data={data} />
     </>
   );

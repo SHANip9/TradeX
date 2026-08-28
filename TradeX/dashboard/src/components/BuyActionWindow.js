@@ -1,7 +1,18 @@
+/**
+ * ============================================================================
+ * Trade Execution Action Window Modal (BuyActionWindow.js)
+ * ============================================================================
+ * Purpose:
+ *   Modal popup dialog for placing real-time BUY and SELL equity orders.
+ *   - Configurable order quantity and limit/execution price.
+ *   - Computes required leverage margin in real time (20% margin requirement).
+ *   - Submits payload to POST `/newOrder` and dispatches global `orderPlaced` event
+ *     to instantly trigger UI re-renders across Holdings, Orders, and Analytics.
+ * ============================================================================
+ */
+
 import React, { useState } from "react";
-
 import api from "../api";
-
 import "./BuyActionWindow.css";
 
 const BuyActionWindow = ({ uid, initialPrice = 0, mode = "BUY", onClose }) => {
@@ -11,9 +22,13 @@ const BuyActionWindow = ({ uid, initialPrice = 0, mode = "BUY", onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const actionLabel = mode === "SELL" ? "Sell" : "Buy";
+  // Calculate 20% margin requirement
   const marginRequired =
     Number(stockQuantity || 0) * Number(stockPrice || 0) * 0.2;
 
+  /**
+   * Dispatches order execution to backend API
+   */
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setStatus("");
@@ -25,6 +40,7 @@ const BuyActionWindow = ({ uid, initialPrice = 0, mode = "BUY", onClose }) => {
         price: Number(stockPrice),
         mode,
       });
+      // Broadcast custom event so other components refresh their data immediately
       window.dispatchEvent(new Event("orderPlaced"));
       onClose();
     } catch (error) {
@@ -36,6 +52,7 @@ const BuyActionWindow = ({ uid, initialPrice = 0, mode = "BUY", onClose }) => {
 
   return (
     <div className="trade-window" id="buy-window">
+      {/* Modal Header */}
       <div className={`header ${mode === "SELL" ? "sell-header" : ""}`}>
         <h3>
           {actionLabel} {uid} <span>NSE</span>
@@ -50,6 +67,7 @@ const BuyActionWindow = ({ uid, initialPrice = 0, mode = "BUY", onClose }) => {
         </div>
       </div>
 
+      {/* Inputs for Quantity and Execution Price */}
       <div className="regular-order">
         <div className="inputs">
           <fieldset>
@@ -79,6 +97,7 @@ const BuyActionWindow = ({ uid, initialPrice = 0, mode = "BUY", onClose }) => {
         {status && <p className="order-status">{status}</p>}
       </div>
 
+      {/* Margin and Action Confirmation Buttons */}
       <div className="buttons">
         <span>Margin required Rs. {marginRequired.toFixed(2)}</span>
         <div>

@@ -1,8 +1,26 @@
-// Fires N concurrent order events at the running API to load-test /newOrder.
-// Usage: node scripts/simulate-trades.js [events] [apiUrl]
+/**
+ * ============================================================================
+ * Trade Simulation & Concurrency Load Tester (simulate-trades.js)
+ * ============================================================================
+ * Purpose:
+ *   Stress tests the TradeX REST API by dispatching N concurrent synthetic order
+ *   events (BUY/SELL) against the `/newOrder` endpoint.
+ *
+ * Usage:
+ *   node backend/scripts/simulate-trades.js [eventsCount] [apiUrl]
+ *   Example: node backend/scripts/simulate-trades.js 500 http://localhost:3002
+ *
+ * Output:
+ *   Reports total elapsed duration, succeeded/failed orders, and overall throughput (orders/sec).
+ * ============================================================================
+ */
+
+// Parse number of simulation events (clamped between 1 and 5000, default 500)
 const events = Math.min(Math.max(Number(process.argv[2]) || 500, 1), 5000);
+// Target API endpoint (default: http://localhost:3002)
 const apiUrl = process.argv[3] || process.env.API_URL || "http://localhost:3002";
 
+// Available ticker symbols for synthetic generation
 const symbols = [
   "RELIANCE",
   "TCS",
@@ -16,6 +34,9 @@ const symbols = [
   "BHARTIARTL",
 ];
 
+/**
+ * Generates a random simulated order with realistic quantity, price, and mode
+ */
 const randomOrder = () => {
   const symbol = symbols[Math.floor(Math.random() * symbols.length)];
   return {
@@ -26,10 +47,14 @@ const randomOrder = () => {
   };
 };
 
+/**
+ * Main concurrency runner
+ */
 const main = async () => {
   console.log(`Firing ${events} concurrent order events at ${apiUrl}/newOrder ...`);
   const startedAt = Date.now();
 
+  // Execute all HTTP POST requests in parallel using Promise.allSettled
   const results = await Promise.allSettled(
     Array.from({ length: events }, () =>
       fetch(`${apiUrl}/newOrder`, {
@@ -52,6 +77,6 @@ const main = async () => {
 };
 
 main().catch((error) => {
-  console.error(error.message);
+  console.error("Simulation error:", error.message);
   process.exit(1);
 });
