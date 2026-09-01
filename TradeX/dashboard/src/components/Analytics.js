@@ -13,6 +13,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -158,6 +159,13 @@ const Analytics = () => {
         >
           {isSimulating ? "Simulating..." : "Simulate 500 trades"}
         </button>
+        <Link
+          to="/powerbi"
+          className="btn btn-pbix"
+          style={{ marginLeft: "0.5rem", textDecoration: "none" }}
+        >
+          📊 Power BI Report
+        </Link>
       </h3>
       {error && <p className="inline-note">{error}</p>}
 

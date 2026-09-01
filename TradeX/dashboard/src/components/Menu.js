@@ -26,6 +26,7 @@ const Menu = () => {
     { label: "Holdings", path: "/holdings" },
     { label: "Positions", path: "/positions" },
     { label: "Funds", path: "/funds" },
+    { label: "Power BI", path: "/powerbi" },
     { label: "Apps", path: "/apps" },
   ];
 

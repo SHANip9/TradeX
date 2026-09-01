@@ -9,6 +9,7 @@
  */
 
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Apps = () => {
   return (
@@ -26,6 +27,13 @@ const Apps = () => {
         <div>
           <h4>Coin</h4>
           <p>Direct mutual funds investment platform with zero brokerage commissions.</p>
+        </div>
+        <div style={{ borderLeft: "3px solid #F59E0B" }}>
+          <h4>Power BI Analytics</h4>
+          <p>Executive reporting, interactive PDF reports, and exported DAX business intelligence models.</p>
+          <Link to="/powerbi" style={{ color: "#2563EB", textDecoration: "none", fontSize: "0.82rem", fontWeight: 500, marginTop: "8px", display: "inline-block" }}>
+            Open Power BI Workspace →
+          </Link>
         </div>
       </div>
     </div>

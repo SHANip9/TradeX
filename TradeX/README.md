@@ -20,8 +20,9 @@ financial data visualisation.
 - **Trade simulation** — fire 500+ concurrent order events via
   `POST /simulate` or `node backend/scripts/simulate-trades.js 500` to load-test
   the API and generate analytics data.
-- **Power BI ready** — CSV/JSON export endpoints for BI dashboards
-  (see [POWERBI.md](./POWERBI.md)).
+- **Power BI Intelligence & Reporting** — complete business intelligence suite with
+  `TradeX.pbix` desktop data model, executive PDF reports (`TradeX_PowerBI_Report.pdf`),
+  and live CSV/JSON export endpoints for BI dashboards (data in `data/`).
 
 ## Run
 
@@ -68,4 +69,17 @@ npm run build
 - Test MongoDB with `npm --prefix backend run check:db`.
 - If MongoDB is unavailable, the API falls back to in-memory holdings, positions,
   orders, and analytics so the app still runs.
-- Dashboard routes use hash URLs, for example `http://localhost:3001/#/analytics`.
+- Dashboard routes use hash URLs, for example `http://localhost:3001/#/analytics` or `http://localhost:3001/#/powerbi`.
+
+## Power BI Integration
+
+The project includes pre-built Power BI business intelligence assets:
+- **`data/TradeX.pbix`**: Complete Power BI Desktop report and data model.
+- **`data/TradeX_PowerBI_Report.pdf`**: Multi-page executive PDF report.
+- **Datasets**:
+  - `data/holdings.csv` (Active portfolio snapshots)
+  - `data/orders.csv` (1,000+ trade order records)
+  - `data/trade_analytics.csv` (Aggregated turnover & weighted prices)
+  - `data/portfolio_history.csv` (Valuation time series)
+- **Interactive UI**: Navigate to the **Power BI** tab in the dashboard (`/powerbi`) to view the embedded report, KPIs, visual structure, and download datasets.
+
